@@ -1,0 +1,55 @@
+﻿USE [master]
+IF db_id('Cultivation') IS NULL
+  CREATE DATABASE [Cultivation]
+GO
+USE [Cultivation]
+GO
+DROP TABLE IF EXISTS [Post];
+DROP TABLE IF EXISTS [CultMember];
+DROP TABLE IF EXISTS [Cult];
+DROP TABLE IF EXISTS [User];
+DROP TABLE IF EXISTS [RelationshipStatus];
+GO
+CREATE TABLE [RelationshipStatus] (
+  [Id] INTEGER PRIMARY KEY IDENTITY,
+  [Status] NVARCHAR(50) NOT NULL
+);
+
+CREATE TABLE [User] (
+  [Id] INTEGER PRIMARY KEY IDENTITY,
+  [Name] NVARCHAR(50) NOT NULL,
+  [Email] NVARCHAR(100) NOT NULL,
+  [Password] NVARCHAR(100) NOT NULL,
+  [Bio] NVARCHAR(MAX),
+  [ProfilePicture] IMAGE,
+  [RelationshipId] INTEGER NOT NULL,
+  CONSTRAINT [FK_User_RelationshipStatus] FOREIGN KEY ([RelationshipId]) REFERENCES [RelationshipStatus] ([Id])
+);
+
+CREATE TABLE [Cult] (
+  [Id] INTEGER PRIMARY KEY IDENTITY,
+  [Name] NVARCHAR(50) NOT NULL,
+  [Created] DATETIME NOT NULL,
+  [Description] NVARCHAR(MAX),
+  [LeaderId] INTEGER NOT NULL,
+  CONSTRAINT [FK_Cult_User] FOREIGN KEY ([LeaderId]) REFERENCES [User] ([Id])
+);
+
+CREATE TABLE [Post] (
+  [Id] INTEGER PRIMARY KEY IDENTITY,
+  [Description] NVARCHAR(MAX) NOT NULL,
+  [Date] DATETIME NOT NULL,
+  [CultId] INTEGER NOT NULL,
+  [UserId] INTEGER NOT NULL,
+  CONSTRAINT [FK_Post_Cult] FOREIGN KEY ([CultId]) REFERENCES [Cult] ([Id]),
+  CONSTRAINT [FK_Post_User] FOREIGN KEY ([UserId]) REFERENCES [User] ([Id])
+);
+
+CREATE TABLE [CultMember] (
+  [Id] INTEGER PRIMARY KEY IDENTITY,
+  [UserId] INTEGER NOT NULL,
+  [CultId] INTEGER NOT NULL,
+  CONSTRAINT [FK_CultMember_User] FOREIGN KEY ([UserId]) REFERENCES [User] ([Id]),
+  CONSTRAINT [FK_CultMember_Cult] FOREIGN KEY ([CultId]) REFERENCES [Cult] ([Id])
+);
+GO
