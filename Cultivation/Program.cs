@@ -16,6 +16,9 @@ namespace Cultivation
             builder.Services.AddSwaggerGen();
             builder.Services.AddTransient<IPostRepository, PostRepository>();
             builder.Services.AddTransient<ICultRepository, CultRepository>();
+            builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddTransient<ICultMemberRepository, CultMemberRepository>();
+            builder.Services.AddTransient<IRelationshipStatusRepository, RelationshipStatusRepository>();
 
             var app = builder.Build();
 
@@ -24,6 +27,13 @@ namespace Cultivation
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                app.UseCors(options =>
+                {
+                    options.AllowAnyHeader();
+                    options.AllowAnyMethod();
+                    options.AllowAnyOrigin();
+                });
             }
 
             app.UseHttpsRedirection();

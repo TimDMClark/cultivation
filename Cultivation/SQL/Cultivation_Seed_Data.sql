@@ -14,7 +14,7 @@ INSERT INTO [Cult] ([Name], [Created], [Description], [LeaderId])
 VALUES
   ('Rose Enthusiasts', '2023-07-15', 'A community of rose lovers.', 1),
   ('Herb Gardeners', '2023-06-30', 'Growing and using fresh herbs.', 2),
-  ('Bonsai Masters', '2023-08-01', 'The art of bonsai cultivation.', 1);
+  ('Bonsai Masters', '2023-08-01', 'The art of bonsai cultivation.', 3);
 
 INSERT INTO [Post] ([Description], [Date], [CultId], [UserId])
 VALUES
@@ -25,7 +25,7 @@ VALUES
 INSERT INTO [CultMember] ([UserId], [CultId])
 VALUES
   (1, 1),
-  (2, 1),
+  (2, 2),
   (3, 2),
   (1, 3),
   (3, 3);

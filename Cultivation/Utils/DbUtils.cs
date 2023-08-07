@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using Microsoft.Data.SqlClient;
 
 namespace Cultivation.Utils
@@ -121,6 +122,18 @@ namespace Cultivation.Utils
             {
                 cmd.Parameters.AddWithValue(name, value);
             }
+        }
+        public static byte[] GetBytes(DbDataReader reader, string columnName)
+        {
+            int ordinal = reader.GetOrdinal(columnName);
+            if (!reader.IsDBNull(ordinal))
+            {
+                long bufferSize = reader.GetBytes(ordinal, 0, null, 0, 0);
+                byte[] buffer = new byte[bufferSize];
+                reader.GetBytes(ordinal, 0, buffer, 0, (int)bufferSize);
+                return buffer;
+            }
+            return null;
         }
     }
 }

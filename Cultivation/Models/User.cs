@@ -20,9 +20,9 @@ namespace Cultivation.Models
 
         public string Bio { get; set; }
 
-        public string ProfilePicture { get; set; }
+        public byte[]? ProfilePicture { get; set; }
 
         [Required]
-        public int RelationshipStatusId { get; set; }
+        public int RelationshipId { get; set; }
     }
 }

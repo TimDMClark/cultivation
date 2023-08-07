@@ -64,3 +64,6 @@ C:\Users\Puffin\workspace\csharp\BackendCapstone\Cultivation\Cultivation\obj\Deb
 C:\Users\Puffin\workspace\csharp\BackendCapstone\Cultivation\Cultivation\obj\Debug\net6.0\Cultivation.pdb
 C:\Users\Puffin\workspace\csharp\BackendCapstone\Cultivation\Cultivation\obj\Debug\net6.0\Cultivation.genruntimeconfig.cache
 C:\Users\Puffin\workspace\csharp\BackendCapstone\Cultivation\Cultivation\obj\Debug\net6.0\ref\Cultivation.dll
+C:\Users\Puffin\workspace\csharp\BackendCapstone\Cultivation\Cultivation\bin\Debug\net6.0\client\package-lock.json
+C:\Users\Puffin\workspace\csharp\BackendCapstone\Cultivation\Cultivation\bin\Debug\net6.0\client\package.json
+C:\Users\Puffin\workspace\csharp\BackendCapstone\Cultivation\Cultivation\bin\Debug\net6.0\client\public\manifest.json
