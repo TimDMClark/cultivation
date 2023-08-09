@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAllPosts } from "../APIManagers/PostManager";
+import { Post } from "./Post";
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
@@ -15,17 +16,14 @@ const PostList = () => {
 
 
   return (  
-    <div>
-      {posts.map((post) => (
-        <div key={post.id}>
-          <p>
-            <strong>{post.title}</strong>
-          </p>
-          <p>
-            {post.caption}
-          </p>
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="cards-column">
+          {posts.map((post) => (
+            <Post key={post.id} post={post} />
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   );
 };

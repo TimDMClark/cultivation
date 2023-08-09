@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 export const Cult = ({ cult }) => {
   return (
     <Card className="m-4">
-      {/* <p className="text-left px-2">Posted by: {cult.userProfile.name}</p> */}
       <CardBody>
         <p>
           <Link to={`/cults/${cult.id}`}>

@@ -12,14 +12,15 @@ export default function Login({setIsLoggedIn}) {
 
     const loginSubmit = (e) => {
         e.preventDefault();
-        login({ email })
-            .then((user) => {
-                setIsLoggedIn(true);
-                navigate("/cults");
-            })
-            .catch((error) => {
-                alert(error.message);
-            });
+
+        login({ email, password })
+        .then((user) => {
+            setIsLoggedIn(true);
+            navigate("/cults");
+        })
+        .catch((error) => {
+            alert(error.message);
+        });
     };
 
     return (

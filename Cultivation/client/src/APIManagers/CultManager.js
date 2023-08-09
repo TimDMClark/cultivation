@@ -3,12 +3,13 @@ import React from 'react';
 const baseUrl = 'https://localhost:7041/api/cult';
 
 export const getAllCults = () => {
-    return fetch(baseUrl).then((response) => response.json());
+    return fetch(baseUrl)
+    .then((response) => response.json());
 };
 
-export const getCultById = (cultId) => {
-    return fetch(`${baseUrl}/${cultId}`)
-    .then((response) => response.json);
+export const getCultById = (id) => {
+    return fetch(`${baseUrl}/${id}`)
+    .then((response) => response.json());
 };
 
 export const addCult = (newCult) => {

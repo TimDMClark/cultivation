@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Form, useNavigate } from 'react-router-dom';
-import { Button, FormGroup, Input, Label } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
+import { Form, Button, FormGroup, Input, Label } from 'reactstrap';
 import { register } from '../APIManagers/UserManager';
 
 export default function Register({setIsLoggedIn}) {
@@ -13,16 +13,20 @@ export default function Register({setIsLoggedIn}) {
     const registerClick = (e) => {
       e.preventDefault();
       if (password && password !== confirmPassword) {
-        alert("Passwords don't match. Do better.");
+          alert("Passwords do not match!");
       } else {
-        const userProfile = { email };
-        register(userProfile, password)
-          .then(() => {
-            setIsLoggedIn(true)
-            navigate('/cults')
-          });
+          const userProfile = { email, password };
+          register(userProfile)
+              .then(() => {
+                  setIsLoggedIn(true);
+                  navigate('/cults');
+              })
+              .catch((error) => {
+                  alert(error.message);
+              });
       }
-   };
+  };
+  
   
     return (
       <Form onSubmit={registerClick}>

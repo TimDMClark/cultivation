@@ -2,28 +2,32 @@ import React from 'react';
 
 const baseUrl = 'https://localhost:7041/api/user';
 
-export const login = (user) => {
-  return fetch(`${baseUrl}/api/user/getbyemail?email=${user.email}`)
+export const login = (inputUser) => {
+  return fetch(`${baseUrl}/GetByEmail?email=${inputUser.email}`)
     .then((r) => r.json())
-    .then((user) => {
-      if (user && user.id) {
-        localStorage.setItem("userProfile", JSON.stringify(user));
-        return user;
+    .then((userFromServer) => {
+      if (userFromServer && userFromServer.id) {
+        if (userFromServer.password === inputUser.password) {
+          localStorage.setItem("user", JSON.stringify(userFromServer));
+          return userFromServer;
+        } else {
+          throw new Error("Invalid password");
+        }
       } else {
         throw new Error("Invalid email");
       }
     })
     .catch((error) => {
-      throw new Error("Invalid email");
+      throw error;
     });
 };
 
 export const logout = () => {
-      localStorage.clear()
+  localStorage.clear()
 };
 
-export const register = (user, password) => {
-  return  fetch(`${baseUrl}/api/user`, {
+export const register = (user) => {
+  return  fetch(`${baseUrl}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -31,10 +35,15 @@ export const register = (user, password) => {
     body: JSON.stringify(user),
   })
   .then((response) => response.json())
-    .then((savedUser) => {
-      localStorage.setItem("user", JSON.stringify(savedUser))
-    });
+  .then((savedUser) => {
+    localStorage.setItem("user", JSON.stringify(savedUser));
+    return savedUser;
+  })
+  .catch((error) => {
+    throw new Error("Registration failed");
+  });
 };
+
 
 export const getAllUsers = () => {
   return fetch(`${baseUrl}/api/user`)
@@ -42,13 +51,17 @@ export const getAllUsers = () => {
 };
 
 export const getUserById = (id) => {
-  return fetch(`${baseUrl}/api/user/${id}`)
+  return fetch(`${baseUrl}/${id}`)
   .then((response) => response.json())
+  .then(user => {
+    console.log("Fetched user:", user);
+    return user;
+  })
 };
 
 export const editUser = (user) => {
   //make sure your parameter matches the one you are sending to the API
-  return fetch(`${baseUrl}/api/UserProfile/${user.Id}`, {
+  return fetch(`${baseUrl}/${user.id}`, {
       method: "PUT",
       headers: {
           "Content-Type": "application/json"
