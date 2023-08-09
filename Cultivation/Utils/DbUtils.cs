@@ -135,5 +135,33 @@ namespace Cultivation.Utils
             }
             return null;
         }
+        /// <summary>
+        ///  Get a boolean from a data reader object
+        ///  This method assumes the value is not null
+        /// </summary>
+        /// <param name="reader">A SqlDataReader that has not exhausted its result set.</param>
+        /// <param name="column">The name of the column from the result set referred to by the reader.</param>
+        /// <returns>The value of the given column.</returns>
+        public static bool GetBoolean(SqlDataReader reader, string column)
+        {
+            return reader.GetBoolean(reader.GetOrdinal(column));
+        }
+
+        /// <summary>
+        ///  Get a boolean? (nullable boolean) from a data reader object and gracefully handle NULL values
+        /// </summary>
+        /// <param name="reader">A SqlDataReader that has not exhausted it's result set.</param>
+        /// <param name="column">The name of the column from the result set referred to by the reader.</param>
+        /// <returns>The value of the given column or null.</returns>
+        public static bool? GetNullableBoolean(SqlDataReader reader, string column)
+        {
+            var ordinal = reader.GetOrdinal(column);
+            if (reader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+
+            return reader.GetBoolean(ordinal);
+        }
     }
 }

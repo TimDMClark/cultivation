@@ -24,6 +24,19 @@ namespace Cultivation.Controllers
             return Ok(users);
         }
 
+        [HttpGet("GetByEmail")]
+        public IActionResult GetByEmail(string email)
+        {
+            var user = _userRepository.GetByEmail(email);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+
         [HttpGet("{id}")]
         public IActionResult GetUser(int id)
         {
@@ -64,5 +77,19 @@ namespace Cultivation.Controllers
             _userRepository.DeleteUser(id);
             return NoContent();
         }
+
+        [HttpGet("{id}/profile-picture")]
+        public IActionResult GetProfilePicture(int id)
+        {
+            byte[] profilePicture = _userRepository.GetProfilePicture(id);
+
+            if (profilePicture == null)
+            {
+                return NotFound();
+            }
+
+            return File(profilePicture, "image/jpeg"); // Assuming the image type is JPEG. Adjust the MIME type if necessary.
+        }
+
     }
 }

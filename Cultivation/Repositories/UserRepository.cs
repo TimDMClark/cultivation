@@ -1,10 +1,7 @@
 ﻿using Cultivation.Models;
 using Cultivation.Utils;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.IO;
 
 namespace Cultivation.Repositories
 {
@@ -20,8 +17,8 @@ namespace Cultivation.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, Name, Email, Bio, ProfilePicture, RelationshipId
-                        FROM [User]";
+                SELECT Id, Name, Email, Password, Bio, ProfilePicture, RelationshipId
+                FROM [User]";
 
                     var reader = cmd.ExecuteReader();
 
@@ -33,6 +30,7 @@ namespace Cultivation.Repositories
                             Id = DbUtils.GetInt(reader, "Id"),
                             Name = DbUtils.GetString(reader, "Name"),
                             Email = DbUtils.GetString(reader, "Email"),
+                            Password = DbUtils.GetString(reader, "Password"),
                             Bio = DbUtils.GetString(reader, "Bio"),
                             ProfilePicture = DbUtils.GetBytes(reader, "ProfilePicture"),
                             RelationshipId = DbUtils.GetInt(reader, "RelationshipId")
@@ -54,9 +52,9 @@ namespace Cultivation.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Name, Email, Bio, ProfilePicture, RelationshipId
-                        FROM [User]
-                        WHERE Id = @Id";
+                SELECT Name, Email, Password, Bio, ProfilePicture, RelationshipId
+                FROM [User]
+                WHERE Id = @Id";
 
                     DbUtils.AddParameter(cmd, "@Id", id);
 
@@ -70,12 +68,50 @@ namespace Cultivation.Repositories
                             Id = id,
                             Name = DbUtils.GetString(reader, "Name"),
                             Email = DbUtils.GetString(reader, "Email"),
+                            Password = DbUtils.GetString(reader, "Password"),
                             Bio = DbUtils.GetString(reader, "Bio"),
                             ProfilePicture = DbUtils.GetBytes(reader, "ProfilePicture"),
                             RelationshipId = DbUtils.GetInt(reader, "RelationshipId")
                         };
                     }
 
+                    reader.Close();
+
+                    return user;
+                }
+            }
+        }
+
+        public User GetByEmail(string email)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                  SELECT Id, Name, Email, Password, Bio, ProfilePicture, RelationshipId
+                FROM [User]
+                 WHERE Email = @email";
+
+                    DbUtils.AddParameter(cmd, "@email", email);
+
+                    User user = null;
+
+                    var reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        user = new User()
+                        {
+                            Id = DbUtils.GetInt(reader, "Id"),
+                            Name = DbUtils.GetString(reader, "Name"),
+                            Email = DbUtils.GetString(reader, "Email"),
+                            Password = DbUtils.GetString(reader, "Password"),
+                            Bio = DbUtils.GetString(reader, "Bio"),
+                            ProfilePicture = DbUtils.GetBytes(reader, "ProfilePicture"),
+                            RelationshipId = DbUtils.GetInt(reader, "RelationshipId")
+                        };
+                    }
                     reader.Close();
 
                     return user;
@@ -97,11 +133,20 @@ namespace Cultivation.Repositories
 
                     DbUtils.AddParameter(cmd, "@Name", user.Name);
                     DbUtils.AddParameter(cmd, "@Email", user.Email);
-                    DbUtils.AddParameter(cmd, "@Password", user.Password); // Note: You should handle password hashing
+                    DbUtils.AddParameter(cmd, "@Password", user.Password);
                     DbUtils.AddParameter(cmd, "@Bio", user.Bio);
+
                     SqlParameter imageParameter = new SqlParameter("@ProfilePicture", SqlDbType.Image);
-                    imageParameter.Value = DBNull.Value;
+                    if (user.ProfilePicture != null && user.ProfilePicture.Length > 0)
+                    {
+                        imageParameter.Value = user.ProfilePicture;
+                    }
+                    else
+                    {
+                        imageParameter.Value = DBNull.Value;
+                    }
                     cmd.Parameters.Add(imageParameter);
+
                     DbUtils.AddParameter(cmd, "@RelationshipId", user.RelationshipId);
 
                     user.Id = (int)cmd.ExecuteScalar();
@@ -128,9 +173,28 @@ namespace Cultivation.Repositories
                     DbUtils.AddParameter(cmd, "@Name", user.Name);
                     DbUtils.AddParameter(cmd, "@Email", user.Email);
                     DbUtils.AddParameter(cmd, "@Bio", user.Bio);
+
                     SqlParameter imageParameter = new SqlParameter("@ProfilePicture", SqlDbType.Image);
-                    imageParameter.Value = DBNull.Value;
+                    if (user.ProfilePicture != null && user.ProfilePicture.Length > 0)
+                    {
+                        imageParameter.Value = user.ProfilePicture;
+                    }
+                    else
+                    {
+                        // Fetch the current profile picture from the database
+                        byte[] existingImage = GetProfilePicture(user.Id);
+                        if (existingImage != null)
+                        {
+                            imageParameter.Value = existingImage;
+                        }
+                        else
+                        {
+                            imageParameter.Value = DBNull.Value;
+                        }
+                    }
                     cmd.Parameters.Add(imageParameter);
+
+
                     DbUtils.AddParameter(cmd, "@RelationshipId", user.RelationshipId);
                     DbUtils.AddParameter(cmd, "@Id", user.Id);
 
@@ -149,6 +213,35 @@ namespace Cultivation.Repositories
                     cmd.CommandText = "DELETE FROM User WHERE Id = @Id";
                     DbUtils.AddParameter(cmd, "@Id", id);
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public byte[] GetProfilePicture(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                SELECT ProfilePicture
+                FROM [User]
+                WHERE Id = @Id";
+
+                    DbUtils.AddParameter(cmd, "@Id", id);
+
+                    var reader = cmd.ExecuteReader();
+
+                    byte[] profilePicture = null;
+                    if (reader.Read())
+                    {
+                        profilePicture = DbUtils.GetBytes(reader, "ProfilePicture");
+                    }
+
+                    reader.Close();
+
+                    return profilePicture;
                 }
             }
         }

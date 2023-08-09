@@ -9,5 +9,7 @@ namespace Cultivation.Repositories
         List<User> GetAllUsers();
         User GetUserById(int id);
         void UpdateUser(User user);
+        User GetByEmail(string email);
+        byte[] GetProfilePicture(int id);
     }
 }
