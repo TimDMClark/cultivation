@@ -69,3 +69,9 @@ export const editUser = (user) => {
       body: JSON.stringify(user)
   })
 }
+
+export const deleteUser = (id) => {
+  return fetch(`${baseUrl}/${id}`, {
+    method: "DELETE"
+  });
+}

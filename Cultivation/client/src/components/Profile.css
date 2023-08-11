@@ -1,0 +1,62 @@
+/* Profile.css */
+
+/* Basic Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+div {
+    padding: 2em;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: #444;
+    font-size: 1.8em;
+    margin-bottom: 1em;
+    text-align: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5em;
+}
+
+img[tag="profile-pic"] {
+    display: block;
+    width: 150px;
+    height: 150px;
+    margin: 1em auto;
+    border-radius: 50%; /* Rounded corners */
+    object-fit: cover; /* In case images are not square-shaped, they'll fit properly */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    display: block;
+    background-color: #007BFF;
+    color: #fff;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 1em auto;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+p {
+    font-size: 1.1em;
+    margin-bottom: 1em;
+    color: #666;
+}
+
+p span {
+    color: #333;
+    font-weight: bold;
+}
+

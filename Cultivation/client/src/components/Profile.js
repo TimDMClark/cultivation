@@ -1,30 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getUserById, editUser } from "../APIManagers/UserManager";
 import { getAllRelationshipStatus } from "../APIManagers/RelationshipStatusManager";
-import { Button, InputGroup } from "reactstrap";
-import { FormControl } from "react-bootstrap";
+import './Profile.css';
+import EditName from "./EditName";
+import DeleteCurrentUser from "./DeleteCurrentUser";
 
 export default function Profile() {
     const [user, setUser] = useState({});
     const [relationshipStatus, setRelationshipStatus] = useState("");
-    const [editingField, setEditingField] = useState(""); // Store which field is currently being edited
+    const [editingName, setEditingName] = useState(false);
     const fileInput = useRef(null);
-
-    const handleUpdate = (field, value) => {
-        const updatedUser = { ...user, [field]: value };
-        editUser(updatedUser)
-            .then(response => {
-                if (response.ok) {
-                    setUser(updatedUser);
-                } else {
-                    console.error(`Failed to update ${field}`);
-                }
-            })
-            .catch(error => console.error(`Error updating ${field}:`, error));
-
-        setEditingField("");  // Reset the editing field
-    };
-
 
     const handleImageSelectAndUpload = (event) => {
       const file = event.target.files[0];
@@ -46,6 +31,11 @@ export default function Profile() {
         ...user,
         profilePicture: base64Image
       };
+
+      const handleUserUpdate = (updatedUser) => {
+        setUser(updatedUser);
+        setEditingName(false);  // Hide the EditName component after updating
+    };
   
       editUser(updatedUser)
         .then(response => {
@@ -88,10 +78,21 @@ export default function Profile() {
         }
     }, [user]);
 
+    const handleUserUpdate = (updatedUser) => {
+      setUser(updatedUser);
+      setEditingName(false); // This line ensures the EditName form closes after an update.
+  };
+
+  const handleUserDeleted = () => {
+    localStorage.clear();
+    window.location.reload();
+};
+
+
     return (
         <div>
           <h2>Profile</h2>
-          <img src={`data:image/jpeg;base64,${user.profilePicture}`} alt="Profile" />
+          <img tag="profile-pic" src={`data:image/jpeg;base64,${user.profilePicture}`} alt="Profile" />
           {!user.profilePicture && (
             <div>
               <input 
@@ -103,37 +104,14 @@ export default function Profile() {
               <button onClick={() => fileInput.current.click()}>Upload Profile Picture</button>
             </div>
           )}
-          <p>
-            Name: {editingField === "name" 
-                ? <InputGroup>
-                    <FormControl defaultValue={user.name} onBlur={e => handleUpdate("name", e.target.value)} />
-                    <InputGroup.Append>
-                        <Button outline onClick={e => handleUpdate("name", e.target.value)}>Save</Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                : <span>{user.name} <Button outline size="sm" onClick={() => setEditingField("name")}>Edit</Button></span>}
+          <p>Name: {user.name} 
+              <button onClick={() => setEditingName(true)}>Edit Name</button> 
           </p>
-          <p>
-            Email: {editingField === "email" 
-                ? <InputGroup>
-                    <FormControl defaultValue={user.email} onBlur={e => handleUpdate("email", e.target.value)} />
-                    <InputGroup.Append>
-                        <Button outline onClick={e => handleUpdate("email", e.target.value)}>Save</Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                : <span>{user.email} <Button outline size="sm" onClick={() => setEditingField("email")}>Edit</Button></span>}
-          </p>
-          <p>
-            Bio: {editingField === "bio" 
-                ? <InputGroup>
-                    <FormControl defaultValue={user.bio} onBlur={e => handleUpdate("bio", e.target.value)} />
-                    <InputGroup.Append>
-                        <Button outline onClick={e => handleUpdate("bio", e.target.value)}>Save</Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                : <span>{user.bio} <Button outline size="sm" onClick={() => setEditingField("bio")}>Edit</Button></span>}
-          </p>
+          {editingName && <EditName currentUser={user} onUpdate={handleUserUpdate} />}
+          <p>Email: {user.email}</p>
+          <p>Bio: {user.bio}</p>
           <p>Relationship Status: {relationshipStatus}</p>
+          <DeleteCurrentUser currentUser={user} onUserDeleted={handleUserDeleted} />
         </div>
     );
 }
