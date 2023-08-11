@@ -210,7 +210,7 @@ namespace Cultivation.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "DELETE FROM User WHERE Id = @Id";
+                    cmd.CommandText = "DELETE FROM [User] WHERE Id = @Id";
                     DbUtils.AddParameter(cmd, "@Id", id);
                     cmd.ExecuteNonQuery();
                 }
