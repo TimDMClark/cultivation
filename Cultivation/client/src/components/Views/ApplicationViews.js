@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import CultList from "./CultList";
-import Login from "./Login";
-import PostList from "./PostList";
-import Home from "./Home";
-import CultDetails from "./CultDetails";
-import Profile from "./Profile";
+import CultList from "../List/CultList";
+import Login from "../Authorization/Login";
+import PostList from "../List/PostList";
+import Home from "../Home";
+import CultDetails from "../Details/CultDetails";
+import Profile from "../Profile";
 
 
 

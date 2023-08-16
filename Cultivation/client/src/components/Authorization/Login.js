@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
-import { login } from '../APIManagers/UserManager';
+import { login } from '../../APIManagers/UserManager';
 
 export default function Login({setIsLoggedIn}) {
 

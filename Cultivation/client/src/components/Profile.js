@@ -1,14 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getUserById, editUser } from "../APIManagers/UserManager";
 import { getAllRelationshipStatus } from "../APIManagers/RelationshipStatusManager";
+import EditName from "./Edit/EditName";
+import DeleteCurrentUser from "./Delete/DeleteCurrentUser";
+import EditEmail from "./Edit/EditEmail";
+import EditBio from "./Edit/EditBio";
+import EditRelationshipStatus from "./Edit/EditRelationshipStatus";
+import EditPassword from "./Edit/EditPassword";
+import { Card, CardBody, CardTitle, CardImg, Button, CardText } from 'reactstrap';
 import './Profile.css';
-import EditName from "./EditName";
-import DeleteCurrentUser from "./DeleteCurrentUser";
 
 export default function Profile() {
     const [user, setUser] = useState({});
     const [relationshipStatus, setRelationshipStatus] = useState("");
     const [editingName, setEditingName] = useState(false);
+    const [editingEmail, setEditingEmail] = useState(false);
+    const [editingBio, setEditingBio] = useState(false);
+    const [editingRelationshipStatus, setEditingRelationshipStatus] = useState(false);
+    const [editingPassword, setEditingPassword] = useState(false);
     const fileInput = useRef(null);
 
     const handleImageSelectAndUpload = (event) => {
@@ -31,11 +40,6 @@ export default function Profile() {
         ...user,
         profilePicture: base64Image
       };
-
-      const handleUserUpdate = (updatedUser) => {
-        setUser(updatedUser);
-        setEditingName(false);  // Hide the EditName component after updating
-    };
   
       editUser(updatedUser)
         .then(response => {
@@ -62,25 +66,23 @@ export default function Profile() {
     }, []);
 
     useEffect(() => {
-        if (user.relationshipId) {
           getAllRelationshipStatus()
             .then((statuses) => {
               const status = statuses.find(s => s.id === user.relationshipId);
-              if (status) {
-                setRelationshipStatus(status.name);
-              } else {
-                console.error("No matching status found for:", user.relationshipId);
-              }
+                setRelationshipStatus(status.status);
             })
             .catch(error => {
               console.error("Error fetching relationship statuses:", error);
             });
-        }
     }, [user]);
 
     const handleUserUpdate = (updatedUser) => {
       setUser(updatedUser);
-      setEditingName(false); // This line ensures the EditName form closes after an update.
+      setEditingName(false);
+      setEditingEmail(false);
+      setEditingBio(false);
+      setEditingRelationshipStatus(false);
+      setEditingPassword(false);
   };
 
   const handleUserDeleted = () => {
@@ -88,30 +90,40 @@ export default function Profile() {
     window.location.reload();
 };
 
-
     return (
-        <div>
-          <h2>Profile</h2>
-          <img tag="profile-pic" src={`data:image/jpeg;base64,${user.profilePicture}`} alt="Profile" />
+      <div className="profile-container">
+      <h2>{user.name}'s Profile</h2>
+      <Card>
+          <CardImg top width="100%" src={`data:image/jpeg;base64,${user.profilePicture}`} alt="Profile" />
           {!user.profilePicture && (
-            <div>
-              <input 
-                type="file" 
-                style={{ display: 'none' }} 
-                onChange={handleImageSelectAndUpload} 
-                ref={fileInput} 
-              />
-              <button onClick={() => fileInput.current.click()}>Upload Profile Picture</button>
-            </div>
+              <div className="upload-btn-wrapper">
+                  <Button color="primary" onClick={() => fileInput.current.click()}>Upload Profile Picture</Button>
+                  <input type="file" style={{ display: 'none' }} onChange={handleImageSelectAndUpload} ref={fileInput} />
+              </div>
           )}
-          <p>Name: {user.name} 
-              <button onClick={() => setEditingName(true)}>Edit Name</button> 
-          </p>
-          {editingName && <EditName currentUser={user} onUpdate={handleUserUpdate} />}
-          <p>Email: {user.email}</p>
-          <p>Bio: {user.bio}</p>
-          <p>Relationship Status: {relationshipStatus}</p>
-          <DeleteCurrentUser currentUser={user} onUserDeleted={handleUserDeleted} />
-        </div>
+          <CardBody>
+              <CardTitle tag="h5">Name: {user.name}</CardTitle>
+              <Button color="link" onClick={() => setEditingName(true)}>Edit Name</Button>
+              {editingName && <EditName currentUser={user} onUpdate={handleUserUpdate} />}
+              
+              <CardText>Email: {user.email}</CardText>
+              <Button color="link" onClick={() => setEditingEmail(true)}>Edit Email</Button>
+              {editingEmail && <EditEmail currentUser={user} onUpdate={handleUserUpdate} />}
+
+              <CardText>Bio: {user.bio}</CardText>
+              <Button color="link" onClick={() => setEditingBio(true)}>Edit Bio</Button>
+              {editingBio && <EditBio currentUser={user} onUpdate={handleUserUpdate} />}
+              
+              <CardText>Relationship Status: {relationshipStatus}</CardText>
+              <Button color="link" onClick={() => setEditingRelationshipStatus(true)}>Edit Relationship Status</Button>
+              {editingRelationshipStatus && <EditRelationshipStatus currentUser={user} onUpdate={handleUserUpdate} />}
+              
+              <Button color="link" onClick={() => setEditingPassword(true)}>Edit Password</Button>
+              {editingPassword && <EditPassword currentUser={user} onUpdate={handleUserUpdate} />}
+              
+              <DeleteCurrentUser currentUser={user} onUserDeleted={handleUserDeleted} />
+          </CardBody>
+      </Card>
+  </div>
     );
 }

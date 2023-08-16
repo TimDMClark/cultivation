@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { editUser } from '../APIManagers/UserManager';
+import { editUser } from '../../APIManagers/UserManager';
 
 export default function EditName({ currentUser, onUpdate }) {
     const [newName, setNewName] = useState(currentUser.name);

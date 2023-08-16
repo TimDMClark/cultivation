@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getCultById } from "../APIManagers/CultManager";
-import { getAllPosts } from "../APIManagers/PostManager";
-import { getUserById } from "../APIManagers/UserManager";
+import { getCultById } from "../../APIManagers/CultManager";
+import { getAllPosts } from "../../APIManagers/PostManager";
+import { getUserById } from "../../APIManagers/UserManager";
 
 function CultDetails() {
     const { cultId } = useParams();

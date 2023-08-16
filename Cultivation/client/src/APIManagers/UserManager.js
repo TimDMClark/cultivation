@@ -1,5 +1,3 @@
-import React from 'react';
-
 const baseUrl = 'https://localhost:7041/api/user';
 
 export const login = (inputUser) => {
@@ -26,27 +24,23 @@ export const logout = () => {
   localStorage.clear()
 };
 
-export const register = (user) => {
+export const register = (userObject) => {
   return  fetch(`${baseUrl}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(user),
+    body: JSON.stringify(userObject),
   })
   .then((response) => response.json())
-  .then((savedUser) => {
-    localStorage.setItem("user", JSON.stringify(savedUser));
-    return savedUser;
-  })
-  .catch((error) => {
-    throw new Error("Registration failed");
-  });
+    .then((savedUser) => {
+      localStorage.setItem("user", JSON.stringify(savedUser))
+    });
 };
 
 
 export const getAllUsers = () => {
-  return fetch(`${baseUrl}/api/user`)
+  return fetch(`${baseUrl}`)
   .then((response) => response.json())
 };
 
@@ -60,7 +54,6 @@ export const getUserById = (id) => {
 };
 
 export const editUser = (user) => {
-  //make sure your parameter matches the one you are sending to the API
   return fetch(`${baseUrl}/${user.id}`, {
       method: "PUT",
       headers: {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getAllCults } from "../APIManagers/CultManager";
-import { Cult } from "./Cult";
+import { getAllCults } from "../../APIManagers/CultManager";
+import { Cult } from "../Cult";
 
 const CultList = () => {
   const [cults, setCults] = useState([]);
